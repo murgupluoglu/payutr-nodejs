@@ -1,0 +1,21 @@
+{
+  "name": "payutr-sample",
+  "version": "1.0.0",
+  "description": "sample payutr",
+  "main": "webservice.js",
+  "scripts": {
+    "start": "node webservice.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sample",
+    "payutr"
+  ],
+  "author": "Mustafa Urgupluoglu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "moment": "^2.20.1",
+    "xml2js": "^0.4.19"
+  }
+}

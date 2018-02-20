@@ -1,0 +1,8 @@
+**/*.log
+**/node_modules
+.coverage
+.nyc_output
+docs/
+out/
+*.lock
+*-lock.js*

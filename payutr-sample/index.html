@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>PayU Payment Test</title>
+    <link rel="icon" href="https://png.icons8.com/metro/1600/test-tube.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+
+<body>
+    <div style="text-align: center; flex-wrap: wrap; justify-content: space-around; margin-top: 10px">
+        <div>
+            <button onclick="testPayment()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Test Payment
+            </button>
+            <button onclick="productsRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Products Request
+            </button>
+            <button onclick="binRequestV1()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                BIN Request V1
+            </button>
+            <button onclick="binRequestV2()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                BIN Request V2
+            </button>
+            <button onclick="ipnService()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                IPN Service
+            </button>
+            <button onclick="iosRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                IOS Request
+            </button>
+            <button onclick="irnRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                IRN Request
+            </button>
+            <button onclick="loyaltyPointsRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Loyalty Points Request
+            </button>
+            <button onclick="idnRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-top: 10px">
+                IDN Request
+            </button>
+            <button onclick="ordersRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-top: 10px">
+                Orders Request
+            </button>
+            <button onclick="productsRequest()" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-top: 10px">
+                Products Request
+            </button>
+        </div>
+        <div>
+            <div id="console" style="margin-top: 20px">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript">
+function testPayment() {
+
+    var ORDERS = [];
+
+    var order = {
+        ORDER_PNAME: "",
+        ORDER_PCODE: "",
+        ORDER_PRICE: "",
+        ORDER_VAT: "",
+        ORDER_PRICE_TYPE: "",
+        ORDER_QTY: "",
+    }
+
+
+    order.ORDER_PNAME = "Test Ürünü";
+    order.ORDER_PCODE = "Test Kodu";
+    order.ORDER_PRICE = "5";
+    order.ORDER_VAT = '18';
+    order.ORDER_PRICE_TYPE = 'NET';
+    order.ORDER_QTY = "1";
+    //order.ORDER_PINFO = "Test Açıklaması";
+    //order.ORDER_VER = "1.0.0";
+
+    ORDERS.push(order);
+
+    var paymentData = {
+        LANGUAGE: "TR",
+        ORDER_REF: (Math.floor(Math.random() * (10000 - 1 + 1)) + 1).toString(),
+        PAY_METHOD: "CCVISAMC",
+        PRICES_CURRENCY: 'TRY',
+        ORDER_SHIPPING: '1',
+        BACK_REF: "http://localhost:8080/api/paymentResult",
+        ORDERS: ORDERS,
+
+        CC_NUMBER: "4355084355084358",
+        EXP_MONTH: "12",
+        EXP_YEAR: "2018",
+        CC_CVV: "000",
+        //CC_OWNER: "Card Holder Name",
+
+        BILL_FNAME: "Name",
+        BILL_LNAME: "Surname",
+        BILL_EMAIL: "mail@mail.com",
+        BILL_PHONE: "02129003711",
+        BILL_COUNTRYCODE: "TR",
+    };
+
+    console.log(paymentData);
+
+    $.post("/api/makePayment", { payment: paymentData }, function(response) {
+
+        console.log("response:isSuccess: " + response.isSuccess);
+
+        //document.getElementById("console").innerHTML = JSON.stringify(response.result);
+        if (response.isSuccess) {
+            console.log(response.result);
+            var returnObject = response.result.EPAYMENT;
+            if (returnObject.STATUS == 'SUCCESS') {
+                if (returnObject.RETURN_CODE == '3DS_ENROLLED') {
+                    window.open(returnObject.URL_3DS, "_self")
+                } else {
+                    document.getElementById('console').innerHTML = "<br>" + returnObject.RETURN_MESSAGE + "<br>Return Code: " + returnObject.RETURN_CODE + "<br>" + "ORDER_REF:" + returnObject.ORDER_REF;
+                }
+            } else {
+                document.getElementById('console').innerHTML = "<br>" + returnObject.RETURN_MESSAGE + "<br>Error Code: " + returnObject.RETURN_CODE + "<br>";
+            }
+        } else {
+            document.getElementById('console').innerHTML = "<br>" + returnObject.RETURN_MESSAGE + "<br>Error Code: " + returnObject.RETURN_CODE + "<br>";
+        }
+    });
+
+}
+
+function productsRequest() {
+
+    var test = {
+        "startDate": "2017-09-20",
+        "endDate": "2017-09-21",
+    }
+
+
+    $.post("/api/productsRequest", test, function(response) {
+        document.getElementById('console').innerHTML = response;
+        console.log("response: " + response);
+    });
+}
+
+function binRequestV1() {
+
+    var requestParams = {
+        'BIN': "557829", //Kredi kartının ilk 6 hanesi.
+    }
+
+    $.post("/api/makeBinRequestV1", requestParams, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function binRequestV2() {
+
+    var requestParams = {
+        extraInfo: "true", //true değer ile gönderilmesi durumunda puan sorgusu yapılmasını sağlayan parametredir.
+        cc_cvv: "000", //Sorgusu yapılacak kartın güvenlik kodu
+        cc_owner: "Göktürk Enez", //Sorgusu yapılacak kart sahibinin Ad Soyad bilgisi
+        exp_year: "2020", //Sorgusu yapılacak kartın son kullanma yılı
+        exp_month: "12", //Sorgusu yapılacak kartın son kullanma ayı
+        cc_number: "4355084355084358", //Sorgusu yapılacak kartın kart numarası
+    }
+
+    $.post("/api/makeBinRequestV2", requestParams, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function ipnService() {
+
+    var test = {
+        "IPN_PID": "IPN_PID",
+        "IPN_PNAME": "IPN_PNAME",
+        "IPN_DATE": "IPN_DATE",
+    }
+
+
+    $.post("/api/ipnService", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response.toString().replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    });
+}
+
+
+function iosRequest() {
+
+    var test = {
+        "REFNOEXT": "123456789",
+    }
+
+
+    $.post("/api/iosRequest", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function irnRequest() {
+
+    var test = {
+        "ORDER_REF": "39537992",
+        "ORDER_AMOUNT": "129.33",
+        "ORDER_CURRENCY": "TRY",
+        "AMOUNT": "10",
+    }
+
+
+    $.post("/api/irnRequest", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function loyaltyPointsRequest() {
+
+    var test = {
+        "CC_CVV": "000",
+        "CC_NUMBER": "4355084355084358",
+        "CC_OWNER": "Ad Soyad",
+        "CURRENCY": "TRY",
+        "EXP_MONTH": "12",
+        "EXP_YEAR": "2018",
+    }
+
+
+    $.post("/api/loyaltyPointsRequest", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function idnRequest() {
+
+    var test = {
+        "ORDER_REF": "41838239",
+        "ORDER_AMOUNT": "10.90",
+        "ORDER_CURRENCY": "TRY",
+        "CHARGE_AMOUNT": "10.90",
+    }
+
+
+    $.post("/api/idnRequest", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function ordersRequest() {
+
+    var test = {
+        "startDate": "2017-09-20",
+        "endDate": "2017-09-21",
+    }
+
+
+    $.post("/api/ordersRequest", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+
+function productsRequest() {
+
+    var test = {
+        "startDate": "2017-09-20",
+        "endDate": "2017-09-21",
+    }
+
+
+    $.post("/api/productsRequest", test, function(response) {
+        console.log("response: " + response);
+        document.getElementById('console').innerHTML = response;
+    });
+}
+</script>
