@@ -23,7 +23,7 @@ payutr.setKeys('PALJZXGV', 'f*%J7z6_#|5]s7V4[g3]'); -> This for 3D Secure
 ## Run Sample
 
 Go to project folder and
-```
+```shell
 npm install 
 
 cd payutr-sample
@@ -37,7 +37,7 @@ Open browser and visit http://localhost:8080/
 
 ## Usage 
 
-```
+```shell
 npm install payutr --save
 ```
 
