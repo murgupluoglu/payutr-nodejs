@@ -46,17 +46,7 @@ var payutr = require('payutr');
 
 payutr.setKeys('MERCHANT_KEY', 'SECRET_KEY');
 
-var paymentData = req.body.payment;
-paymentData["ORDER_DATE"] = "2018-02-20 13:50:00";
-
-var api_response = {
-	isSuccess: false,
-	result: null
- }
-
 payutr.makePayment(paymentData, function(error, response, body) {
-	xml2js.parseString(body, { explicitArray: false }, function(err, result) {
-		console.log(result);
-	});
+	console.log(body);
 });
 ```
