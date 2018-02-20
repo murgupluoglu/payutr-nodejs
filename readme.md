@@ -5,7 +5,7 @@
 
 ## For test payment 
 
-```
+```javascript
 payutr.setKeys('OPU_TEST', 'SECRET_KEY'); -> Use this one for without 3D Secure
 
 payutr.setKeys('PALJZXGV', 'f*%J7z6_#|5]s7V4[g3]'); -> This for 3D Secure
