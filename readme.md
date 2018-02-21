@@ -47,6 +47,8 @@ var payutr = require('payutr');
 payutr.setKeys('MERCHANT_KEY', 'SECRET_KEY');
 
 payutr.makePayment(paymentData, function(error, response, body) {
-	console.log(body);
+    xml2js.parseString(body, { explicitArray: false }, function(err, result) {
+        console.log(result);
+    });
 });
 ```
