@@ -1,6 +1,6 @@
 {
   "name": "payutr",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "PayU Turkey Nodejs",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,6 @@
   "homepage": "https://github.com/murgupluoglu/payutr-nodejs#readme",
   "dependencies": {
     "crypto-js": "^3.1.9-1",
-    "request": "^2.85.0"
+    "request": "^2.88.0"
   }
 }
